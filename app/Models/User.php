@@ -30,4 +30,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Kurslar (o'qituvchi sifatida)
+    public function teachingCourses()
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    // Kurslar (o'quvchi sifatida)
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->withPivot('progress', 'completed')
+            ->withTimestamps();
+    }
+
+    // Topshiriq javoblari
+    public function submissions()
+    {
+        return $this->hasMany(AssignmentSubmission::class);
+    }
 }

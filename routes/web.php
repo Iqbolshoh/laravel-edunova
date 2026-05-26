@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::view('/statistics', 'admin.statistics')->name('statistics');
 
     // Student
-    Route::view('/my-courses', 'student.courses')->name('student.courses');
+    Route::view('/courses', 'student.courses')->name('student.courses');
     Route::view('/assignments', 'student.assignments')->name('student.assignments');
 
     // Profile
