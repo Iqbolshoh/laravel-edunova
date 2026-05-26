@@ -8,8 +8,8 @@
     {{-- Lesson Content --}}
     <div class="bg-slate-800/50 border border-white/5 rounded-2xl p-8 backdrop-blur-sm">
         @if($lesson->description)
-        <div class="text-slate-300 leading-relaxed mb-6">
-            {{ $lesson->description }}
+        <div class="text-slate-300 leading-relaxed mb-6 prose prose-invert max-w-none">
+            {!! $lesson->description !!}
         </div>
         @endif
 

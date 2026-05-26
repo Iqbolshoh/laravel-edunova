@@ -54,7 +54,7 @@ class LessonController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'video_url'   => ['nullable', 'url'],
-            'file'        => ['nullable', 'file', 'max:8192', 'mimes:pdf,doc,docx,ppt,pptx'],
+            'file'        => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,ppt,pptx'],
             'duration'    => ['nullable', 'integer', 'min:1'],
             'order'       => ['required', 'integer', 'min:1'],
             'status'      => ['required', 'in:active,inactive'],
@@ -65,15 +65,23 @@ class LessonController extends Controller
             'file.mimes'     => 'Fayl formati qo\'llab-quvvatlanmaydi.',
         ]);
 
+        // Faylni saqlash
         $filePath = null;
         if ($request->hasFile('file')) {
             $filePath = $request->file('file')->store('lessons/' . $course->id, 'public');
         }
 
+        // Descriptionni tozalash
+        $description = $request->input('description');
+        if (empty($description) || trim(strip_tags($description)) === '' || $description === '<p><br></p>') {
+            $description = null;
+        }
+
+        // Darsni yaratish
         Lesson::create([
             'course_id'   => $course->id,
             'title'       => $validated['title'],
-            'description' => $validated['description'] ?? null,
+            'description' => $description,
             'video_url'   => $validated['video_url'] ?? null,
             'file_path'   => $filePath,
             'duration'    => $validated['duration'] ?? null,
@@ -141,20 +149,49 @@ class LessonController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'video_url'   => ['nullable', 'url'],
-            'file'        => ['nullable', 'file', 'max:8192', 'mimes:pdf,doc,docx,ppt,pptx'],
+            'file'        => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,ppt,pptx'],
             'duration'    => ['nullable', 'integer', 'min:1'],
             'order'       => ['required', 'integer', 'min:1'],
             'status'      => ['required', 'in:active,inactive'],
+        ], [
+            'title.required' => 'Dars nomi kiritilishi shart.',
+            'video_url.url'  => 'Video URL noto\'g\'ri formatda.',
+            'file.max'       => 'Fayl hajmi 10MB dan oshmasligi kerak.',
+            'file.mimes'     => 'Fayl formati qo\'llab-quvvatlanmaydi.',
         ]);
 
+        // Faylni yangilash
         if ($request->hasFile('file')) {
+            // Eski faylni o'chirish
             if ($lesson->file_path && Storage::disk('public')->exists($lesson->file_path)) {
                 Storage::disk('public')->delete($lesson->file_path);
             }
+            // Yangi faylni saqlash
             $validated['file_path'] = $request->file('file')->store('lessons/' . $course->id, 'public');
         }
 
-        $lesson->update($validated);
+        // Descriptionni tozalash
+        $description = $request->input('description');
+        if (empty($description) || trim(strip_tags($description)) === '' || $description === '<p><br></p>') {
+            $description = null;
+        }
+
+        // Yangilanishi kerak bo'lgan ma'lumotlar
+        $updateData = [
+            'title'       => $validated['title'],
+            'description' => $description,
+            'video_url'   => $validated['video_url'] ?? null,
+            'duration'    => $validated['duration'] ?? null,
+            'order'       => $validated['order'],
+            'status'      => $validated['status'],
+        ];
+
+        // Fayl mavjud bo'lsa qo'shish
+        if (isset($validated['file_path'])) {
+            $updateData['file_path'] = $validated['file_path'];
+        }
+
+        $lesson->update($updateData);
 
         return redirect()->route('courses.lessons.index', $course)
             ->with('success', 'Dars muvaffaqiyatli yangilandi.');
@@ -173,6 +210,7 @@ class LessonController extends Controller
             abort(404, 'Dars topilmadi.');
         }
 
+        // Faylni o'chirish
         if ($lesson->file_path && Storage::disk('public')->exists($lesson->file_path)) {
             Storage::disk('public')->delete($lesson->file_path);
         }
