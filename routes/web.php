@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +12,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', fn() => view('home'))->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -23,23 +22,13 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
 
-    // Login page
-    Route::get('/login', function () {
-        return view('auth.login');
-    })->name('login');
+    // Auth pages
+    Route::view('/login', 'auth.login')->name('login');
+    Route::view('/register', 'auth.register')->name('register');
 
-    // Register page
-    Route::get('/register', function () {
-        return view('auth.register');
-    })->name('register');
-
-    // Login action
-    Route::post('/login', [AuthController::class, 'login'])
-        ->name('login.post');
-
-    // Register action
-    Route::post('/register', [AuthController::class, 'register'])
-        ->name('register.post');
+    // Auth actions
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
 /*
@@ -50,73 +39,40 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | Dashboard
-    |--------------------------------------------------------------------------
-    */
+    // Dashboard
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Statistics
+    Route::view('/statistics', 'admin.statistics')->name('statistics');
 
+    // Student
+    Route::view('/my-courses', 'student.courses')->name('student.courses');
+    Route::view('/assignments', 'student.assignments')->name('student.assignments');
 
-    // Statistics Route
-    Route::get('/statistics', function () {
-        return view('admin.statistics');
-    })->name('statistics');
+    // Profile
+    Route::prefix('profile')->name('profile.')->group(function () {
 
-    // Student Routes
-    Route::get('/my-courses', function () {
-        return view('student.courses');
-    })->name('student.courses');
-    Route::get('/assignments', function () {
-        return view('student.assignments');
-    })->name('student.assignments');
+        Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
+        Route::put('/update', [ProfileController::class, 'updateProfile'])->name('update');
 
-    // Profile Routes
-    Route::get('/profile/settings', function () {
-        return view('profile.settings');
-    })->name('profile.settings');
-    Route::get('/profile/security', function () {
-        return view('profile.security');
-    })->name('profile.security');
+        Route::get('/security', [ProfileController::class, 'security'])->name('security');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Logout
-    |--------------------------------------------------------------------------
-    */
+        Route::get('/sessions', [ProfileController::class, 'sessions'])->name('sessions');
+        Route::delete('/sessions/{session}', [ProfileController::class, 'destroySession'])->name('sessions.destroy');
+        Route::post('/sessions/logout-others', [ProfileController::class, 'logoutOtherDevices'])->name('sessions.logout-others');
+    });
 
-    Route::post('/logout', [AuthController::class, 'logout'])
-        ->name('logout');
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Panel Routes
-    |--------------------------------------------------------------------------
-    */
+    // Admin
+    Route::prefix('admin')->name('admin.')->group(function () {
 
-    Route::prefix('admin')
-        ->name('admin.')
-        ->group(function () {
+        Route::resource('users', UserController::class)
+            ->middleware('permission:users.view');
 
-            /*
-            |--------------------------------------------------------------------------
-            | User Management
-            |--------------------------------------------------------------------------
-            */
-
-            Route::resource('users', UserController::class)
-                ->middleware('permission:users.view');
-
-            /*
-            |--------------------------------------------------------------------------
-            | Role Management
-            |--------------------------------------------------------------------------
-            */
-
-            Route::resource('roles', RoleController::class)
-                ->middleware('permission:roles.view');
-        });
+        Route::resource('roles', RoleController::class)
+            ->middleware('permission:roles.view');
+    });
 });

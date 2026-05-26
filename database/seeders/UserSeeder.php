@@ -14,26 +14,26 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['email' => 'admin@templates.uz'],
+            ['email' => 'admin@edunova.uz'],
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('$qb01S7#o&05'),
+                'password' => Hash::make('12345678'),
             ]
         );
 
         User::firstOrCreate(
-            ['email' => 'teacher@templates.uz'],
+            ['email' => 'teacher@edunova.uz'],
             [
                 'name' => 'Teacher',
-                'password' => Hash::make('$qb01S7#o&05'),
+                'password' => Hash::make('12345678'),
             ]
         );
 
         User::firstOrCreate(
-            ['email' => 'student@templates.uz'],
+            ['email' => 'student@edunova.uz'],
             [
                 'name' => 'Student',
-                'password' => Hash::make('$qb01S7#o&05'),
+                'password' => Hash::make('12345678'),
             ]
         );
 
