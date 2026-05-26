@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -46,7 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/statistics', 'admin.statistics')->name('statistics');
 
     // Student
-    Route::view('/courses', 'student.courses')->name('student.courses');
+    Route::resource('courses', CourseController::class);
+    Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->name('courses.enroll');
     Route::view('/assignments', 'student.assignments')->name('student.assignments');
 
     // Profile

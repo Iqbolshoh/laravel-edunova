@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,8 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         // Call the UserSeeder to create initial users
         $this->call([
-            UserSeeder::class,
             RolePermissionSeeder::class,
+            CourseSeeder::class,
         ]);
     }
 }

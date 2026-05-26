@@ -78,24 +78,24 @@ class RolePermissionSeeder extends Seeder
                 'superadmin' => [
                     [
                         'name' => 'Super Admin',
-                        'email' => 'admin@templates.uz',
-                        'password' => bcrypt('$qb01S7#o&05'),
+                        'email' => 'admin@edunova.uz',
+                        'password' => bcrypt('12345678'),
                     ],
                 ],
 
                 'teacher' => [
                     [
                         'name' => 'Teacher',
-                        'email' => 'teacher@templates.uz',
-                        'password' => bcrypt('$qb01S7#o&05'),
+                        'email' => 'teacher@edunova.uz',
+                        'password' => bcrypt('12345678'),
                     ],
                 ],
 
                 'student' => [
                     [
                         'name' => 'Student',
-                        'email' => 'student@templates.uz',
-                        'password' => bcrypt('$qb01S7#o&05'),
+                        'email' => 'student@edunova.uz',
+                        'password' => bcrypt('12345678'),
                     ],
                 ],
             ],
@@ -158,6 +158,6 @@ class RolePermissionSeeder extends Seeder
         | Outputs success message after seeding.
         |
         */
-        $this->command->info('2. Superadmin, teacher, and student roles seeded successfully!');
+        $this->command->info('1. Superadmin, teacher, and student roles seeded successfully!');
     }
 }
