@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -75,7 +75,6 @@ class CourseController extends Controller
             'status.in'        => 'Noto\'g\'ri status tanlandi.',
         ]);
 
-        // Rasm yuklash
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('courses', 'public');
@@ -104,7 +103,7 @@ class CourseController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.view'), 403, 'Ruxsat etilmagan.');
 
-        $course->load(['teacher', 'assignments', 'students']);
+        $course->load(['teacher', 'lessons', 'students']);
 
         return view('courses.show', compact('course'));
     }
@@ -130,10 +129,6 @@ class CourseController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.edit'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu kursni tahrirlay olmaysiz.');
-        }
-
         $validated = $request->validate([
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -154,9 +149,7 @@ class CourseController extends Controller
             'status.in'        => 'Noto\'g\'ri status tanlandi.',
         ]);
 
-        // Rasm yuklash
         if ($request->hasFile('image')) {
-            // Eski rasmni o'chirish
             if ($course->image && Storage::disk('public')->exists($course->image)) {
                 Storage::disk('public')->delete($course->image);
             }
@@ -178,11 +171,6 @@ class CourseController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.delete'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu kursni o\'chira olmaysiz.');
-        }
-
-        // Rasmni o'chirish
         if ($course->image && Storage::disk('public')->exists($course->image)) {
             Storage::disk('public')->delete($course->image);
         }
