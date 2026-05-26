@@ -60,6 +60,28 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+
+    // Statistics Route
+    Route::get('/statistics', function () {
+        return view('admin.statistics');
+    })->name('statistics');
+
+    // Student Routes
+    Route::get('/my-courses', function () {
+        return view('student.courses');
+    })->name('student.courses');
+    Route::get('/assignments', function () {
+        return view('student.assignments');
+    })->name('student.assignments');
+
+    // Profile Routes
+    Route::get('/profile/settings', function () {
+        return view('profile.settings');
+    })->name('profile.settings');
+    Route::get('/profile/security', function () {
+        return view('profile.security');
+    })->name('profile.security');
+
     /*
     |--------------------------------------------------------------------------
     | Logout
