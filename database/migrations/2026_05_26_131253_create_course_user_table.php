@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('progress')->default(0); // foizda
+            $table->integer('progress')->default(0);
             $table->boolean('completed')->default(false);
             $table->timestamps();
         });

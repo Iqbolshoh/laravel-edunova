@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -36,10 +36,6 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.edit'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu kursga dars qo\'sha olmaysiz.');
-        }
-
         $nextOrder = $course->lessons()->max('order') + 1;
 
         return view('lessons.create', compact('course', 'nextOrder'));
@@ -54,15 +50,11 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.edit'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu kursga dars qo\'sha olmaysiz.');
-        }
-
         $validated = $request->validate([
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'video_url'   => ['nullable', 'url'],
-            'file'        => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,ppt,pptx,zip,rar'],
+            'file'        => ['nullable', 'file', 'max:8192', 'mimes:pdf,doc,docx,ppt,pptx'],
             'duration'    => ['nullable', 'integer', 'min:1'],
             'order'       => ['required', 'integer', 'min:1'],
             'status'      => ['required', 'in:active,inactive'],
@@ -73,7 +65,6 @@ class LessonController extends Controller
             'file.mimes'     => 'Fayl formati qo\'llab-quvvatlanmaydi.',
         ]);
 
-        // Fayl yuklash
         $filePath = null;
         if ($request->hasFile('file')) {
             $filePath = $request->file('file')->store('lessons/' . $course->id, 'public');
@@ -90,7 +81,7 @@ class LessonController extends Controller
             'status'      => $validated['status'],
         ]);
 
-        return redirect()->route('lessons.index', $course)
+        return redirect()->route('courses.lessons.index', $course)
             ->with('success', 'Dars muvaffaqiyatli qo\'shildi.');
     }
 
@@ -109,13 +100,8 @@ class LessonController extends Controller
 
         $course->load('teacher');
 
-        // Barcha darslar (sidebar uchun)
         $allLessons = $course->lessons()->orderBy('order')->get();
-
-        // Joriy dars indeksini topish
         $currentIndex = $allLessons->search(fn($l) => $l->id === $lesson->id);
-
-        // Oldingi va keyingi
         $prevLesson = $allLessons->get($currentIndex - 1);
         $nextLesson = $allLessons->get($currentIndex + 1);
 
@@ -131,8 +117,8 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.edit'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu darsni tahrirlay olmaysiz.');
+        if ($lesson->course_id !== $course->id) {
+            abort(404, 'Dars topilmadi.');
         }
 
         return view('lessons.edit', compact('course', 'lesson'));
@@ -147,21 +133,20 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.edit'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu darsni tahrirlay olmaysiz.');
+        if ($lesson->course_id !== $course->id) {
+            abort(404, 'Dars topilmadi.');
         }
 
         $validated = $request->validate([
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'video_url'   => ['nullable', 'url'],
-            'file'        => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,ppt,pptx,zip,rar'],
+            'file'        => ['nullable', 'file', 'max:8192', 'mimes:pdf,doc,docx,ppt,pptx'],
             'duration'    => ['nullable', 'integer', 'min:1'],
             'order'       => ['required', 'integer', 'min:1'],
             'status'      => ['required', 'in:active,inactive'],
         ]);
 
-        // Fayl yuklash
         if ($request->hasFile('file')) {
             if ($lesson->file_path && Storage::disk('public')->exists($lesson->file_path)) {
                 Storage::disk('public')->delete($lesson->file_path);
@@ -171,7 +156,7 @@ class LessonController extends Controller
 
         $lesson->update($validated);
 
-        return redirect()->route('lessons.index', $course)
+        return redirect()->route('courses.lessons.index', $course)
             ->with('success', 'Dars muvaffaqiyatli yangilandi.');
     }
 
@@ -184,8 +169,8 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.delete'), 403, 'Ruxsat etilmagan.');
 
-        if ($course->teacher_id !== $user->id) {
-            abort(403, 'Siz bu darsni o\'chira olmaysiz.');
+        if ($lesson->course_id !== $course->id) {
+            abort(404, 'Dars topilmadi.');
         }
 
         if ($lesson->file_path && Storage::disk('public')->exists($lesson->file_path)) {
@@ -194,7 +179,7 @@ class LessonController extends Controller
 
         $lesson->delete();
 
-        return redirect()->route('lessons.index', $course)
+        return redirect()->route('courses.lessons.index', $course)
             ->with('success', 'Dars muvaffaqiyatli o\'chirildi.');
     }
 }
