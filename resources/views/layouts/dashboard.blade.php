@@ -18,11 +18,10 @@
 
     <div x-data="{ mobileMenuOpen: false, logoutModalOpen: false }" class="flex h-screen w-full relative">
 
-        <div x-show="logoutModalOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
+        <div x-show="logoutModalOpen" class="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
+            <div x-show="logoutModalOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
 
-            <div x-show="logoutModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity"></div>
-
-            <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+            <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0 z-10 relative">
                 <div x-show="logoutModalOpen" @click.away="logoutModalOpen = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-2xl bg-slate-800/90 border border-white/10 text-left shadow-2xl shadow-rose-500/10 transition-all sm:my-8 sm:w-full sm:max-w-md p-6">
                     <div>
                         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/20 border border-rose-500/30">
@@ -53,7 +52,14 @@
             </div>
         </div>
 
-        <aside class="w-64 bg-slate-900/95 backdrop-blur-xl border-r border-white/5 flex flex-col transition-transform duration-300 z-40" :class="mobileMenuOpen ? 'translate-x-0 absolute inset-y-0 left-0' : '-translate-x-full absolute inset-y-0 left-0 md:relative md:translate-x-0'">
+        <div x-show="mobileMenuOpen"
+            @click="mobileMenuOpen = false"
+            x-transition.opacity
+            class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 md:hidden"
+            style="display: none;"></div>
+
+        <aside class="w-64 bg-slate-900/95 backdrop-blur-xl border-r border-white/5 flex flex-col transition-transform duration-300 z-50 fixed inset-y-0 left-0 md:relative md:translate-x-0"
+            :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'">
 
             <div class="h-20 flex items-center px-6 border-b border-white/5">
                 <a href="{{ route('dashboard') }}" class="flex items-center group">
@@ -66,7 +72,7 @@
                     <span class="font-bold text-xl tracking-tight text-white">Edu<span class="text-blue-500">Nova</span></span>
                 </a>
 
-                <button @click="mobileMenuOpen = false" class="md:hidden ml-auto text-slate-400 hover:text-white">
+                <button @click="mobileMenuOpen = false" class="md:hidden ml-auto text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -74,7 +80,6 @@
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-
                 <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-500/10 text-blue-400 font-medium' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
@@ -95,7 +100,6 @@
                     </svg>
                     Vazifalar
                 </a>
-
             </nav>
 
             <div class="p-4 border-t border-white/5">
@@ -115,9 +119,9 @@
                 <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob" style="animation-delay: 2s;"></div>
             </div>
 
-            <header class="h-20 flex items-center justify-between px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 z-40 relative">
+            <header class="h-20 flex items-center justify-between px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 z-30 relative">
 
-                <button @click="mobileMenuOpen = true" class="md:hidden text-slate-400 hover:text-white focus:outline-none">
+                <button @click="mobileMenuOpen = true" class="md:hidden text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -126,7 +130,6 @@
                 <h1 class="hidden md:block text-xl font-semibold text-white">@yield('header_title', 'Dashboard')</h1>
 
                 <div class="flex items-center space-x-4">
-
                     <a href="#" class="hidden sm:flex bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -134,7 +137,7 @@
                         Kurslar katalogi
                     </a>
 
-                    <button class="relative p-2 text-slate-400 hover:text-white transition-colors">
+                    <button class="relative p-2 text-slate-400 hover:text-white transition-colors hover:bg-slate-800 rounded-lg">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                         </svg>
@@ -142,7 +145,7 @@
                     </button>
 
                     <div x-data="{ dropdownOpen: false }" class="relative">
-                        <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center focus:outline-none">
+                        <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center focus:outline-none p-1 rounded-full hover:bg-slate-800 transition-colors">
                             <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
                                 <span class="text-sm font-medium text-slate-300">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
                             </div>
@@ -165,7 +168,7 @@
                 </div>
             </header>
 
-            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 z-10 relative">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 md:p-8 z-10 relative">
                 @yield('content')
             </main>
 

@@ -29,7 +29,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirect the user to the home page or intended URL
-            return redirect()->intended('/');
+            return redirect()->intended('/dashboard');
         }
 
         // If authentication fails, redirect back with an error message
@@ -65,7 +65,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect the user to the home page after successful registration
-        return redirect('/');
+        return redirect('/dashboard');
     }
 
     /**
