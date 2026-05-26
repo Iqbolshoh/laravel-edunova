@@ -46,4 +46,10 @@ class Course extends Model
     {
         return $this->hasMany(Assignment::class);
     }
+
+    // Darslar
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class)->orderBy('order');
+    }
 }

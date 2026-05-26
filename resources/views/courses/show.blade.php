@@ -110,8 +110,8 @@
                     <span class="text-xs text-slate-500">Soat</span>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 text-center">
-                    <span class="text-2xl font-bold text-white block">{{ $course->assignments->count() }}</span>
-                    <span class="text-xs text-slate-500">Vazifalar</span>
+                    <span class="text-2xl font-bold text-white block">{{ $course->lessons->count() }}</span>
+                    <span class="text-xs text-slate-500">Darslar</span>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 text-center">
                     <span class="text-2xl font-bold text-white block">
@@ -126,7 +126,16 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
+                {{-- Darslarni ko'rish --}}
+                <a href="{{ route('courses.lessons.index', $course) }}" class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-blue-500/20 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Darslarni ko'rish
+                </a>
+
+                {{-- Kursga yozilish --}}
                 @can('courses.enroll')
                 @if(!auth()->user()->hasRole('teacher'))
                 @if(!auth()->user()->enrolledCourses->contains($course->id))
@@ -144,6 +153,7 @@
                 @endif
                 @endcan
 
+                {{-- Tahrirlash --}}
                 @can('courses.edit')
                 @if(auth()->user()->hasRole('teacher') && $course->teacher_id === auth()->id())
                 <a href="{{ route('courses.edit', $course) }}" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-amber-500/20">
@@ -155,35 +165,34 @@
         </div>
     </div>
 
-    {{-- Assignments Section --}}
-    @if($course->assignments->count() > 0)
+    {{-- Lessons Section --}}
+    @if($course->lessons->count() > 0)
     <div class="bg-slate-800/50 border border-white/5 rounded-2xl p-8 backdrop-blur-sm">
-        <h2 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-            </svg>
-            Vazifalar ({{ $course->assignments->count() }})
-        </h2>
-        <div class="space-y-3">
-            @foreach($course->assignments as $assignment)
-            <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 hover:border-blue-500/20 transition-colors">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-white font-medium">{{ $assignment->title }}</h3>
-                        @if($assignment->due_date)
-                        <p class="text-xs text-slate-500 mt-1">
-                            Muddat: {{ $assignment->due_date->format('d.m.Y H:i') }}
-                        </p>
-                        @endif
-                    </div>
-                    <span class="text-xs px-2 py-1 rounded-full font-medium
-                        @if($assignment->status === 'active') bg-emerald-500/10 text-emerald-400
-                        @else bg-rose-500/10 text-rose-400
-                        @endif">
-                        {{ $assignment->status === 'active' ? 'Faol' : 'Yopilgan' }}
-                    </span>
-                </div>
-            </div>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Darslar ({{ $course->lessons->count() }})
+            </h2>
+            <a href="{{ route('courses.lessons.index', $course) }}" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                Barchasini ko'rish →
+            </a>
+        </div>
+        <div class="space-y-2">
+            @foreach($course->lessons->take(5) as $lesson)
+            <a href="{{ route('courses.lessons.show', [$course, $lesson]) }}" class="flex items-center gap-3 bg-slate-900/50 rounded-xl p-3 border border-white/5 hover:border-blue-500/20 transition-colors group">
+                <span class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0">
+                    {{ $lesson->order }}
+                </span>
+                <span class="text-sm text-slate-300 group-hover:text-white transition-colors flex-1">{{ $lesson->title }}</span>
+                @if($lesson->duration)
+                <span class="text-xs text-slate-500">{{ $lesson->duration }} daq</span>
+                @endif
+                <svg class="w-4 h-4 text-slate-600 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
             @endforeach
         </div>
     </div>

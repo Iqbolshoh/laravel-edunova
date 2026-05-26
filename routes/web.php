@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -50,6 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('courses', CourseController::class);
     Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->name('courses.enroll');
     Route::view('/assignments', 'student.assignments')->name('student.assignments');
+
+    // Course Lessons
+    Route::resource('courses.lessons', LessonController::class);
 
     // Profile
     Route::prefix('profile')->name('profile.')->group(function () {
