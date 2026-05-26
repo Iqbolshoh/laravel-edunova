@@ -103,13 +103,23 @@ class LessonController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.view'), 403, 'Ruxsat etilmagan.');
 
+        if ($lesson->course_id !== $course->id) {
+            abort(404, 'Dars topilmadi.');
+        }
+
         $course->load('teacher');
 
-        // Oldingi va keyingi dars
-        $prevLesson = $course->lessons()->where('order', '<', $lesson->order)->orderBy('order', 'desc')->first();
-        $nextLesson = $course->lessons()->where('order', '>', $lesson->order)->orderBy('order', 'asc')->first();
+        // Barcha darslar (sidebar uchun)
+        $allLessons = $course->lessons()->orderBy('order')->get();
 
-        return view('lessons.show', compact('course', 'lesson', 'prevLesson', 'nextLesson'));
+        // Joriy dars indeksini topish
+        $currentIndex = $allLessons->search(fn($l) => $l->id === $lesson->id);
+
+        // Oldingi va keyingi
+        $prevLesson = $allLessons->get($currentIndex - 1);
+        $nextLesson = $allLessons->get($currentIndex + 1);
+
+        return view('lessons.show', compact('course', 'lesson', 'allLessons', 'prevLesson', 'nextLesson'));
     }
 
     /**
