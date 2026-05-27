@@ -180,8 +180,8 @@
                             </svg>
                             Kurslar
                         </a>
-                        <a href="{{ route('student.assignments') }}"
-                            class="flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('student.assignments') ? 'bg-blue-500/10 text-blue-400 font-medium border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white' }}">
+                        <a href="{{ route('assignments.index') }}"
+                            class="flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('assignments.index') ? 'bg-blue-500/10 text-blue-400 font-medium border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white' }}">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
@@ -322,6 +322,7 @@
                 <h1 class="hidden md:block text-xl font-semibold text-white">@yield('header_title', 'Dashboard')</h1>
 
                 <div class="flex items-center space-x-4">
+
                     <a href="#"
                         class="hidden sm:flex bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,33 +332,171 @@
                         Kurslar katalogi
                     </a>
 
-                    <button
-                        class="relative p-2 text-slate-400 hover:text-white transition-colors hover:bg-slate-800 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                            </path>
-                        </svg>
-                        <span
-                            class="absolute top-1.5 right-1.5 block w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-slate-900"></span>
-                    </button>
+                    {{-- Bildirishnomalar (rolle qarab) --}}
+                    <div x-data="{ notificationsOpen: false }" class="relative">
+                        <button @click="notificationsOpen = !notificationsOpen" @click.away="notificationsOpen = false"
+                            class="relative p-2 text-slate-400 hover:text-white transition-colors hover:bg-slate-800 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
 
+                            @can('assignments.grade')
+                            {{-- O'qituvchi uchun: tekshirilmagan topshiriqlar soni --}}
+                            @php
+                            $ungradedSubmissions = \App\Models\AssignmentSubmission::where('status', 'submitted')
+                            ->with(['assignment', 'user'])
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+                            $notificationCount = $ungradedSubmissions->count();
+                            @endphp
+                            @if($notificationCount > 0)
+                            <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white border-2 border-slate-900">
+                                {{ $notificationCount > 9 ? '9+' : $notificationCount }}
+                            </span>
+                            @endif
+                            @else
+                            {{-- Talaba uchun: topshirilmagan topshiriqlar soni --}}
+                            @php
+                            $allAssignments = \App\Models\Assignment::where(function($query) {
+                            $query->whereNull('course_id')
+                            ->orWhereHas('course', function($q) {
+                            $q->whereHas('students', function($sq) {
+                            $sq->where('user_id', auth()->id());
+                            });
+                            });
+                            })->get();
+
+                            $submittedAssignmentIds = \App\Models\AssignmentSubmission::where('user_id', auth()->id())
+                            ->pluck('assignment_id')
+                            ->toArray();
+
+                            $unsubmittedAssignments = $allAssignments->filter(function($assignment) use ($submittedAssignmentIds) {
+                            return !in_array($assignment->id, $submittedAssignmentIds);
+                            });
+
+                            $notificationCount = $unsubmittedAssignments->count();
+                            @endphp
+                            @if($notificationCount > 0)
+                            <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white border-2 border-slate-900">
+                                {{ $notificationCount > 9 ? '9+' : $notificationCount }}
+                            </span>
+                            @endif
+                            @endcan
+                        </button>
+
+                        {{-- Bildirishnomalar dropdown --}}
+                        <div x-show="notificationsOpen"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-lg py-2 z-50"
+                            style="display: none;">
+
+                            <div class="px-4 py-2 border-b border-slate-700/50 flex justify-between items-center">
+                                <h3 class="text-sm font-semibold text-white">Bildirishnomalar</h3>
+                                @if($notificationCount > 0)
+                                <span class="text-[10px] bg-{{ auth()->user()->can('assignments.grade') ? 'rose' : 'amber' }}-500/20 text-{{ auth()->user()->can('assignments.grade') ? 'rose' : 'amber' }}-400 px-2 py-0.5 rounded-full">
+                                    {{ $notificationCount }} ta
+                                </span>
+                                @endif
+                            </div>
+
+                            <div class="max-h-80 overflow-y-auto">
+                                @can('assignments.grade')
+                                {{-- O'qituvchi uchun: tekshirilmagan topshiriqlar ro'yxati --}}
+                                @forelse($ungradedSubmissions as $notification)
+                                <a href="{{ route('assignments.show', $notification->assignment_id) }}"
+                                    class="block px-4 py-3 hover:bg-slate-700/50 transition-colors border-b border-slate-700/50 last:border-0 group">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 bg-rose-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm text-white font-medium truncate group-hover:text-blue-400">
+                                                {{ $notification->assignment->title ?? 'Topshiriq' }}
+                                            </p>
+                                            <p class="text-xs text-slate-400 mt-0.5">
+                                                <span class="text-blue-400">{{ $notification->user->name ?? 'Talaba' }}</span> topshiriq yubordi
+                                            </p>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">
+                                                {{ $notification->created_at->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                                @empty
+                                <div class="px-4 py-6 text-center text-sm text-slate-400">
+                                    <svg class="w-8 h-8 mx-auto mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Barcha topshiriqlar tekshirilgan
+                                </div>
+                                @endforelse
+                                @else
+                                {{-- Talaba uchun: topshirilmagan topshiriqlar ro'yxati --}}
+                                @forelse($unsubmittedAssignments->take(10) as $assignment)
+                                <a href="{{ route('assignments.show', $assignment) }}"
+                                    class="block px-4 py-3 hover:bg-slate-700/50 transition-colors border-b border-slate-700/50 last:border-0 group">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm text-white font-medium truncate group-hover:text-blue-400">
+                                                {{ $assignment->title }}
+                                            </p>
+                                            <p class="text-xs text-slate-400 mt-0.5">
+                                                Kurs: <span class="text-blue-400">{{ $assignment->course->title ?? 'Umumiy' }}</span>
+                                            </p>
+                                            @if($assignment->due_date)
+                                            <p class="text-[10px] text-rose-400 mt-0.5 flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                Muddat: {{ \Carbon\Carbon::parse($assignment->due_date)->format('d.m.Y H:i') }}
+                                            </p>
+                                            @endif
+                                        </div>
+                                        <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-1 rounded-full whitespace-nowrap">
+                                            Topshirish kerak
+                                        </span>
+                                    </div>
+                                </a>
+                                @empty
+                                <div class="px-4 py-6 text-center text-sm text-slate-400">
+                                    <svg class="w-8 h-8 mx-auto mb-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Barcha topshiriqlar bajarilgan
+                                </div>
+                                @endforelse
+                                @endcan
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Profil dropdown --}}
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false"
                             class="flex items-center focus:outline-none p-1 rounded-full hover:bg-slate-800 transition-colors">
-                            <div
-                                class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
-                                <span
-                                    class="text-sm font-medium text-slate-300">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
+                            <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
+                                <span class="text-sm font-medium text-slate-300">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
                             </div>
-                            <svg class="w-4 h-4 ml-2 text-slate-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
+                            <svg class="w-4 h-4 ml-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
 
-                        <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-100"
+                        <div x-show="dropdownOpen"
+                            x-transition:enter="transition ease-out duration-100"
                             x-transition:enter-start="transform opacity-0 scale-95"
                             x-transition:enter-end="transform opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-75"
@@ -365,14 +504,14 @@
                             x-transition:leave-end="transform opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-lg py-1 z-50"
                             style="display: none;">
+
                             <div class="px-4 py-3 border-b border-slate-700/50 text-sm">
                                 <p class="text-white font-medium truncate">{{ auth()->user()->name ?? 'User' }}</p>
-                                <p class="text-slate-400 truncate">{{ auth()->user()->email ?? 'user@example.com' }}
-                                </p>
+                                <p class="text-slate-400 truncate">{{ auth()->user()->email ?? 'user@example.com' }}</p>
                             </div>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white">Profilni
-                                tahrirlash</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white">
+                                Profilni tahrirlash
+                            </a>
                             <button @click="logoutModalOpen = true; dropdownOpen = false" type="button"
                                 class="w-full text-left block px-4 py-2 text-sm text-rose-400 hover:bg-slate-700 hover:text-rose-300 border-t border-slate-700/50 mt-1">
                                 Tizimdan chiqish
