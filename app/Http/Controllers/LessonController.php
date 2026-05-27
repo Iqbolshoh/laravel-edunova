@@ -82,7 +82,7 @@ class LessonController extends Controller
             'course_id'   => $course->id,
             'title'       => $validated['title'],
             'description' => $description,
-            'video_url'   => $validated['video_url'] ?? null,
+            'video_url' => $this->formatVideoUrl($validated['video_url'] ?? null),
             'file_path'   => $filePath,
             'duration'    => $validated['duration'] ?? null,
             'order'       => $validated['order'],
@@ -180,7 +180,7 @@ class LessonController extends Controller
         $updateData = [
             'title'       => $validated['title'],
             'description' => $description,
-            'video_url'   => $validated['video_url'] ?? null,
+            'video_url' => $this->formatVideoUrl($validated['video_url'] ?? null),
             'duration'    => $validated['duration'] ?? null,
             'order'       => $validated['order'],
             'status'      => $validated['status'],
@@ -219,5 +219,21 @@ class LessonController extends Controller
 
         return redirect()->route('courses.lessons.index', $course)
             ->with('success', 'Dars muvaffaqiyatli o\'chirildi.');
+    }
+
+    private function formatVideoUrl($url)
+    {
+        if (empty($url)) return null;
+
+        // YouTube URL'larini qayta ishlash
+        if (preg_match('/youtube\.com\/watch\?v=([^\&\?\/]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+
+        if (preg_match('/youtu\.be\/([^\&\?\/]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+
+        return $url;
     }
 }
