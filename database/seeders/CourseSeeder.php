@@ -15,12 +15,12 @@ class CourseSeeder extends Seeder
     public function run(): void
     {
         // O'qituvchini topish yoki yaratish
-        $teacher = User::where('email', 'teacher@edunova.uz')->first();
+        $teacher = User::where('email', 'teacher@cloudnova.uz')->first();
 
         if (!$teacher) {
             $teacher = User::create([
                 'name'     => 'O\'qituvchi',
-                'email'    => 'teacher@edunova.uz',
+                'email'    => 'teacher@cloudnova.uz',
                 'password' => bcrypt('password'),
             ]);
             $teacher->assignRole('teacher');

@@ -78,7 +78,7 @@ class RolePermissionSeeder extends Seeder
                 'superadmin' => [
                     [
                         'name' => 'Super Admin',
-                        'email' => 'admin@edunova.uz',
+                        'email' => 'admin@cloudnova.uz',
                         'password' => bcrypt('12345678'),
                     ],
                 ],
@@ -86,7 +86,7 @@ class RolePermissionSeeder extends Seeder
                 'teacher' => [
                     [
                         'name' => 'Teacher',
-                        'email' => 'teacher@edunova.uz',
+                        'email' => 'teacher@cloudnova.uz',
                         'password' => bcrypt('12345678'),
                     ],
                 ],
@@ -94,7 +94,7 @@ class RolePermissionSeeder extends Seeder
                 'student' => [
                     [
                         'name' => 'Student',
-                        'email' => 'student@edunova.uz',
+                        'email' => 'student@cloudnova.uz',
                         'password' => bcrypt('12345678'),
                     ],
                 ],

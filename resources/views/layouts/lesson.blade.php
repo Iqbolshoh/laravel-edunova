@@ -6,13 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dars') - EduNova</title>
+    <title>@yield('title', 'Dars') - CloudNova</title>
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
+        }
+    </style>
 </head>
 
 <body
@@ -20,7 +45,7 @@
 
     <div x-data="{ sidebarOpen: true }" class="flex h-screen w-full relative">
 
-        {{-- Sidebar - Darslar ro'yxati --}}
+        {{-- Sidebar - Lessons List --}}
         <aside :class="sidebarOpen ? 'w-80' : 'w-0'"
             class="bg-slate-900/95 border-r border-white/5 flex flex-col transition-all duration-300 overflow-hidden relative">
             <div class="flex-1 overflow-y-auto">

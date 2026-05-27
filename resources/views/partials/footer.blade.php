@@ -5,15 +5,13 @@
             {{-- Brand Column --}}
             <div class="col-span-1 md:col-span-2">
                 <a href="/" class="flex items-center gap-3 mb-6 group">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-all">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                        </svg>
+                    <div class="w-10 h-10 flex items-center justify-center transition-all duration-300 group-hover:scale-105 drop-shadow-lg shadow-blue-500/20">
+                        <img src="{{ asset('logo.png') }}" alt="CloudNova Logo" class="w-full h-full object-contain">
                     </div>
-                    <span class="font-extrabold text-xl tracking-tight text-white">Edu<span class="text-blue-500">Nova</span></span>
+                    <span class="font-extrabold text-xl tracking-tight text-white">Cloud<span class="text-blue-500">Nova</span></span>
                 </a>
                 <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
-                    EduNova — ta'lim jarayonini zamonaviy, interaktiv va samarali tashkil etish uchun yaratilgan professional ta'lim platformasi. O'qituvchilar va o'quvchilarni bir joyda jamlaymiz.
+                    CloudNova — ta'lim jarayonini zamonaviy, interaktiv va samarali tashkil etish uchun yaratilgan professional ta'lim platformasi. O'qituvchilar va o'quvchilarni bir joyda jamlaymiz.
                 </p>
             </div>
 
@@ -64,7 +62,7 @@
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        info@edunova.uz
+                        info@cloudnova.uz
                     </li>
                     <li class="flex items-center gap-3 text-sm text-slate-400">
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +89,7 @@
         {{-- Footer Bottom --}}
         <div class="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-slate-500 text-sm">
-                &copy; {{ date('Y') }} EduNova Platformasi. Barcha huquqlar himoyalangan.
+                &copy; {{ date('Y') }} CloudNova Platformasi. Barcha huquqlar himoyalangan.
             </p>
             <div class="flex space-x-6 text-sm text-slate-500">
                 <a href="/privacy" class="hover:text-slate-300 transition-colors">Maxfiylik siyosati</a>

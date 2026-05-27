@@ -221,7 +221,7 @@ class LessonController extends Controller
             ->with('success', 'Dars muvaffaqiyatli o\'chirildi.');
     }
 
-    private function formatVideoUrl($url)
+    private function formatVideoUrl(string $url)
     {
         if (empty($url)) return null;
 

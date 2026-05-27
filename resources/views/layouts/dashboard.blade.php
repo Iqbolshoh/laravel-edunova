@@ -5,13 +5,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title', 'Dashboard') - EduNova</title>
+    <title>@yield('title', 'Dashboard') - CloudNova</title>
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
+        }
+    </style>
 </head>
 
 <body
@@ -82,17 +107,10 @@
             {{-- Logo --}}
             <div class="h-20 flex items-center px-6 border-b border-white/5">
                 <a href="{{ route('dashboard') }}" class="flex items-center group">
-                    <div
-                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mr-3 shadow-lg shadow-blue-500/20">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m0-6l-9 5m9-5l9 5"></path>
-                        </svg>
+                    <div class="w-8 h-8 flex items-center justify-center mr-3 transition-all duration-300 group-hover:scale-105 drop-shadow-md">
+                        <img src="{{ asset('logo.png') }}" alt="CloudNova Logo" class="w-full h-full object-contain">
                     </div>
-                    <span class="font-bold text-xl tracking-tight text-white">Edu<span
-                            class="text-blue-500">Nova</span></span>
+                    <span class="font-bold text-xl tracking-tight text-white">Cloud<span class="text-blue-500">Nova</span></span>
                 </a>
 
                 <button @click="mobileMenuOpen = false"
