@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AssignmentSubmission extends Model
 {
@@ -11,6 +13,8 @@ class AssignmentSubmission extends Model
         'user_id',
         'content',
         'file_path',
+        'file_name',
+        'submission_type',
         'score',
         'feedback',
         'status',
@@ -22,18 +26,57 @@ class AssignmentSubmission extends Model
         'submitted_at' => 'datetime',
         'graded_at' => 'datetime',
         'score' => 'integer',
-        'status' => 'string',
     ];
 
-    // Vazifa
-    public function assignment()
+    /**
+     * Vazifaga bog'lanish
+     */
+    public function assignment(): BelongsTo
     {
         return $this->belongsTo(Assignment::class);
     }
 
-    // O'quvchi
-    public function user()
+    /**
+     * O'quvchiga bog'lanish
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Baholanganligini tekshirish
+     */
+    public function isGraded(): bool
+    {
+        return $this->status === 'graded';
+    }
+
+    /**
+     * Yuborilganligini tekshirish
+     */
+    public function isSubmitted(): bool
+    {
+        return $this->status === 'submitted';
+    }
+
+    /**
+     * Fayl hajmini formatlash
+     */
+    public function getFileSizeAttribute(): string
+    {
+        if (!$this->file_path || !Storage::disk('public')->exists($this->file_path)) {
+            return '0 KB';
+        }
+
+        $size = Storage::disk('public')->size($this->file_path);
+
+        if ($size < 1024) {
+            return $size . ' B';
+        } elseif ($size < 1048576) {
+            return round($size / 1024, 2) . ' KB';
+        } else {
+            return round($size / 1048576, 2) . ' MB';
+        }
     }
 }
