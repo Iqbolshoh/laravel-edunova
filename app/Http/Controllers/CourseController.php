@@ -103,7 +103,7 @@ class CourseController extends Controller
         $user = Auth::user();
         abort_unless($user->hasPermissionTo('courses.view'), 403, 'Ruxsat etilmagan.');
 
-        $course->load(['teacher', 'lessons', 'students']);
+        $course->load(['teacher', 'students']);
 
         return view('courses.show', compact('course'));
     }

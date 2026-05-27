@@ -8,10 +8,12 @@
 
     {{-- Success/Error Messages --}}
     @if (session('success'))
-    <div x-data="{ show: true }" x-show="show" class="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-emerald-400">
+    <div x-data="{ show: true }" x-show="show"
+        class="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-emerald-400">
         <div class="flex items-center gap-3">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="text-sm font-medium">{{ session('success') }}</span>
         </div>
@@ -24,10 +26,12 @@
     @endif
 
     @if (session('error'))
-    <div x-data="{ show: true }" x-show="show" class="flex items-center justify-between bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-400">
+    <div x-data="{ show: true }" x-show="show"
+        class="flex items-center justify-between bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-400">
         <div class="flex items-center gap-3">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="text-sm font-medium">{{ session('error') }}</span>
         </div>
@@ -40,9 +44,11 @@
     @endif
 
     {{-- Back Button --}}
-    <a href="{{ route('courses.index') }}" class="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white transition-colors">
+    <a href="{{ route('courses.index') }}"
+        class="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white transition-colors">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+            </path>
         </svg>
         Kurslarga qaytish
     </a>
@@ -51,12 +57,16 @@
     <div class="bg-slate-800/50 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm">
         {{-- Course Image --}}
         <div class="h-64 sm:h-80 bg-slate-700/50 overflow-hidden">
-            @if($course->image)
-            <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}" class="w-full h-full object-cover" />
+            @if ($course->image)
+            <img src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}"
+                class="w-full h-full object-cover" />
             @else
-            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500/20 to-emerald-500/20">
+            <div
+                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500/20 to-emerald-500/20">
                 <svg class="w-20 h-20 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253">
+                    </path>
                 </svg>
             </div>
             @endif
@@ -70,27 +80,32 @@
                     <div class="flex items-center gap-3 text-sm text-slate-400">
                         <span class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             {{ $course->teacher->name ?? 'Noma\'lum' }}
                         </span>
                         <span>•</span>
                         <span class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             {{ $course->created_at->format('d.m.Y') }}
                         </span>
                     </div>
                 </div>
-                <span class="text-xs px-3 py-1 rounded-full font-medium
-                    @if($course->status === 'active') bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+                <span
+                    class="text-xs px-3 py-1 rounded-full font-medium
+                    @if ($course->status === 'active') bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
                     @elseif($course->status === 'inactive') bg-rose-500/10 text-rose-400 border border-rose-500/20
-                    @else bg-slate-500/10 text-slate-400 border border-slate-500/20
-                    @endif">
-                    @if($course->status === 'active') Faol
-                    @elseif($course->status === 'inactive') Nofaol
-                    @else Qoralama
+                    @else bg-slate-500/10 text-slate-400 border border-slate-500/20 @endif">
+                    @if ($course->status === 'active')
+                    Faol
+                    @elseif($course->status === 'inactive')
+                    Nofaol
+                    @else
+                    Qoralama
                     @endif
                 </span>
             </div>
@@ -115,7 +130,7 @@
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 text-center">
                     <span class="text-2xl font-bold text-white block">
-                        @if($course->price > 0)
+                        @if ($course->price > 0)
                         {{ number_format($course->price) }}
                         @else
                         Bepul
@@ -128,25 +143,29 @@
             {{-- Action Buttons --}}
             <div class="flex items-center gap-3 flex-wrap">
                 {{-- Darslarni ko'rish --}}
-                <a href="{{ route('courses.lessons.index', $course) }}" class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-blue-500/20 flex items-center gap-2">
+                <a href="{{ route('courses.lessons.index', $course) }}"
+                    class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-blue-500/20 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                     Darslarni ko'rish
                 </a>
 
                 {{-- Kursga yozilish --}}
                 @can('courses.enroll')
-                @if(!auth()->user()->hasRole('teacher'))
-                @if(!auth()->user()->enrolledCourses->contains($course->id))
+                @if (!auth()->user()->hasRole('teacher'))
+                @if (!auth()->user()->enrolledCourses->contains($course->id))
                 <form action="{{ route('courses.enroll', $course) }}" method="POST">
                     @csrf
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-emerald-500/30">
+                    <button type="submit"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-emerald-500/30">
                         Kursga yozilish
                     </button>
                 </form>
                 @else
-                <span class="bg-emerald-500/10 text-emerald-400 px-6 py-2.5 rounded-xl font-medium border border-emerald-500/20">
+                <span
+                    class="bg-emerald-500/10 text-emerald-400 px-6 py-2.5 rounded-xl font-medium border border-emerald-500/20">
                     Siz yozilgansiz
                 </span>
                 @endif
@@ -155,8 +174,9 @@
 
                 {{-- Tahrirlash --}}
                 @can('courses.edit')
-                @if(auth()->user()->hasRole('teacher') && $course->teacher_id === auth()->id())
-                <a href="{{ route('courses.edit', $course) }}" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-amber-500/20">
+                @if (auth()->user()->hasRole('teacher') && $course->teacher_id === auth()->id())
+                <a href="{{ route('courses.edit', $course) }}"
+                    class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-4 py-2.5 rounded-xl font-medium transition-colors border border-amber-500/20">
                     Tahrirlash
                 </a>
                 @endif
@@ -165,53 +185,24 @@
         </div>
     </div>
 
-    {{-- Lessons Section --}}
-    @if($course->lessons->count() > 0)
-    <div class="bg-slate-800/50 border border-white/5 rounded-2xl p-8 backdrop-blur-sm">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                Darslar ({{ $course->lessons->count() }})
-            </h2>
-            <a href="{{ route('courses.lessons.index', $course) }}" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                Barchasini ko'rish →
-            </a>
-        </div>
-        <div class="space-y-2">
-            @foreach($course->lessons->take(5) as $lesson)
-            <a href="{{ route('courses.lessons.show', [$course, $lesson]) }}" class="flex items-center gap-3 bg-slate-900/50 rounded-xl p-3 border border-white/5 hover:border-blue-500/20 transition-colors group">
-                <span class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0">
-                    {{ $lesson->order }}
-                </span>
-                <span class="text-sm text-slate-300 group-hover:text-white transition-colors flex-1">{{ $lesson->title }}</span>
-                @if($lesson->duration)
-                <span class="text-xs text-slate-500">{{ $lesson->duration }} daq</span>
-                @endif
-                <svg class="w-4 h-4 text-slate-600 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </a>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
     {{-- Students Section (faqat o'qituvchiga) --}}
-    @if(auth()->user()->hasRole('teacher') && $course->teacher_id === auth()->id() && $course->students->count() > 0)
+    @if (auth()->user()->hasRole('teacher') && $course->teacher_id === auth()->id() && $course->students->count() > 0)
     <div class="bg-slate-800/50 border border-white/5 rounded-2xl p-8 backdrop-blur-sm">
         <h2 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                </path>
             </svg>
             O'quvchilar ({{ $course->students->count() }})
         </h2>
         <div class="space-y-3">
-            @foreach($course->students as $student)
-            <div class="flex items-center justify-between bg-slate-900/50 rounded-xl p-4 border border-white/5">
+            @foreach ($course->students as $student)
+            <div
+                class="flex items-center justify-between bg-slate-900/50 rounded-xl p-4 border border-white/5">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-sm">
+                    <div
+                        class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-sm">
                         {{ substr($student->name, 0, 1) }}
                     </div>
                     <div>
@@ -221,8 +212,9 @@
                 </div>
                 <div class="text-right">
                     <span class="text-sm text-white font-medium">{{ $student->pivot->progress }}%</span>
-                    @if($student->pivot->completed)
-                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full ml-2">Yakunlangan</span>
+                    @if ($student->pivot->completed)
+                    <span
+                        class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full ml-2">Yakunlangan</span>
                     @endif
                 </div>
             </div>

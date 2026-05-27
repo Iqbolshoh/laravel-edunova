@@ -16,7 +16,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="font-sans antialiased bg-slate-900 text-slate-200 flex flex-col min-h-screen selection:bg-blue-500 selection:text-white">
+<body
+    class="font-sans antialiased bg-slate-900 text-slate-200 flex flex-col min-h-screen selection:bg-blue-500 selection:text-white">
 
     {{-- Main Content --}}
     <main class="flex-grow w-full">
